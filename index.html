@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nebula Jam - Lo-Fi Beats & Cosmic Playground</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-btn {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+            transition: all 0.3s ease;
+        }
+        .glow-btn:hover {
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.8);
+            transform: translateY(-2px);
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-purple-500 selection:text-white">
+
+    <header class="w-full py-4 px-6 glass-panel sticky top-0 z-50 flex items-center justify-between border-b border-gray-800">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-xl font-extrabold tracking-wider bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">NEBULA JAM</h1>
+                <p class="text-xs text-gray-400">Anti-Boredom Cosmic Suite</p>
+            </div>
+        </div>
+        <div class="flex space-x-2">
+            <button onclick="switchTab('beats')" id="nav-beats" class="px-4 py-2 text-sm font-semibold rounded-lg bg-purple-600 text-white transition-all">Beat Lab</button>
+            <button onclick="switchTab('sandbox')" id="nav-sandbox" class="px-4 py-2 text-sm font-semibold rounded-lg text-gray-300 hover:bg-gray-800 transition-all">Particle Sky</button>
+            <button onclick="switchTab('arcade')" id="nav-arcade" class="px-4 py-2 text-sm font-semibold rounded-lg text-gray-300 hover:bg-gray-800 transition-all">Orbit Game</button>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center">
+        
+        <!-- SECTION 1: BEAT LAB -->
+        <div id="tab-beats" class="space-y-6">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <h2 class="text-3xl font-bold tracking-tight">Lo-Fi Beat & Melody Synthesizer</h2>
+                <p class="text-gray-400 text-sm">Tap the pads to create chill cosmic rhythms. Toggle auto-jam for instant relaxation.</p>
+            </div>
+
+            <div class="glass-panel p-6 rounded-2xl max-w-3xl mx-auto w-full shadow-2xl">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center space-x-4">
+                        <button onclick="toggleAutoJam()" id="autoJamBtn" class="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 font-semibold text-sm glow-btn flex items-center space-x-2">
+                            <span id="autoJamIcon">▶</span>
+                            <span id="autoJamText">Start Auto-Jam</span>
+                        </button>
+                        <div class="text-sm text-gray-400">Tempo: <span id="tempoVal" class="text-purple-400 font-bold">85</span> BPM</div>
+                    </div>
+                    <input type="range" min="60" max="120" value="85" oninput="updateTempo(this.value)" class="accent-purple-500 cursor-pointer w-32">
+                </div>
+
+                <!-- Beat Pads Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <button onclick="playSound('kick')" class="h-28 rounded-2xl bg-gray-900/80 border border-purple-500/30 hover:border-purple-400 flex flex-col items-center justify-center space-y-2 transition-all active:scale-95 group">
+                        <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors">🥁</div>
+                        <span class="text-sm font-semibold tracking-wide">Cosmic Kick</span>
+                        <span class="text-[10px] text-gray-500">Key: Q</span>
+                    </button>
+                    <button onclick="playSound('snare')" class="h-28 rounded-2xl bg-gray-900/80 border border-pink-500/30 hover:border-pink-400 flex flex-col items-center justify-center space-y-2 transition-all active:scale-95 group">
+                        <div class="w-8 h-8 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400 group-hover:bg-pink-500 group-hover:text-white transition-colors">🪘</div>
+                        <span class="text-sm font-semibold tracking-wide">Stellar Snare</span>
+                        <span class="text-[10px] text-gray-500">Key: W</span>
+                    </button>
+                    <button onclick="playSound('hihat')" class="h-28 rounded-2xl bg-gray-900/80 border border-indigo-500/30 hover:border-indigo-400 flex flex-col items-center justify-center space-y-2 transition-all active:scale-95 group">
+                        <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-colors">✨</div>
+                        <span class="text-sm font-semibold tracking-wide">Nebula Hi-Hat</span>
+                        <span class="text-[10px] text-gray-500">Key: E</span>
+                    </button>
+                    <button onclick="playSound('chord')" class="h-28 rounded-2xl bg-gray-900/80 border border-cyan-500/30 hover:border-cyan-400 flex flex-col items-center justify-center space-y-2 transition-all active:scale-95 group">
+                        <div class="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white transition-colors">🎹</div>
+                        <span class="text-sm font-semibold tracking-wide">Dreamy Chord</span>
+                        <span class="text-[10px] text-gray-500">Key: R</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: PARTICLE SANDBOX -->
+        <div id="tab-sandbox" class="hidden space-y-4">
+            <div class="text-center max-w-xl mx-auto space-y-1">
+                <h2 class="text-3xl font-bold tracking-tight">Cosmic Particle Sky</h2>
+                <p class="text-gray-400 text-sm">Move your mouse or tap around to spawn gravity-defying stardust.</p>
+            </div>
+            <div class="glass-panel rounded-2xl overflow-hidden h-[450px] relative shadow-2xl">
+                <canvas id="particleCanvas"></canvas>
+                <div class="absolute bottom-4 left-4 right-4 flex justify-between items-center pointer-events-none">
+                    <span class="text-xs text-gray-400 bg-black/40 px-3 py-1.5 rounded-lg">Interactive WebGL Stardust Engine</span>
+                    <button onclick="clearParticles()" class="pointer-events-auto px-4 py-1.5 bg-red-500/20 hover:bg-red-500/40 border border-red-500/40 text-red-300 rounded-lg text-xs font-semibold transition-all">Clear Sky</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: ORBIT GAME -->
+        <div id="tab-arcade" class="hidden space-y-4">
+            <div class="text-center max-w-xl mx-auto space-y-1">
+                <h2 class="text-3xl font-bold tracking-tight">Orbit Dodger Arcade</h2>
+                <p class="text-gray-400 text-sm">Guide the glowing orb, dodge incoming space debris, and collect starlight!</p>
+            </div>
+            <div class="glass-panel rounded-2xl overflow-hidden h-[450px] relative shadow-2xl flex flex-col items-center justify-center">
+                <canvas id="gameCanvas"></canvas>
+                <div id="gameOverlay" class="absolute inset-0 bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center space-y-4">
+                    <h3 id="gameTitle" class="text-2xl font-extrabold text-purple-400">Ready to Launch?</h3>
+                    <p id="gameSub" class="text-sm text-gray-300">Use Arrow Keys / Touch / Mouse to move.</p>
+                    <button onclick="startGame()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 font-bold text-white glow-btn">Start Game</button>
+                </div>
+                <div class="absolute top-4 left-4 text-sm font-semibold bg-black/40 px-3 py-1 rounded-lg">Score: <span id="scoreVal" class="text-purple-400">0</span></div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="w-full py-4 text-center text-xs text-gray-500 border-t border-gray-800 glass-panel">
+        Nebula Jam &bull; Crafted for endless cosmic discovery &bull; 2026
+    </footer>
+
+    <script>
+        // Tab switching functionality
+        function switchTab(tabName) {
+            ['beats', 'sandbox', 'arcade'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).classList.remove('bg-purple-600', 'text-white');
+                document.getElementById(`nav-${t}`).classList.add('text-gray-300', 'hover:bg-gray-800');
+            });
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabName}`).classList.add('bg-purple-600', 'text-white');
+            document.getElementById(`nav-${tabName}`).classList.remove('text-gray-300', 'hover:bg-gray-800');
+
+            if (tabName === 'sandbox') initParticleCanvas();
+            if (tabName === 'arcade' && !gameRunning && score === 0) {
+                // Prepare game canvas sizing
+                setupGameCanvas();
+            }
+        }
+
+        // Web Audio API Synthesizer Setup
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            const ctx = getAudioContext();
+            const now = ctx.currentTime;
+
+            if (type === 'kick') {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(0.01, now + 0.3);
+                gain.gain.setValueAtTime(1, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'snare') {
+                // Noise buffer for snare
+                const bufferSize = ctx.sampleRate * 0.2;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'highpass';
+                filter.frequency.value = 800;
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(0.7, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+                noise.start(now);
+            } else if (type === 'hihat') {
+                const bufferSize = ctx.sampleRate * 0.08;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'highpass';
+                filter.frequency.value = 5000;
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(0.4, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+                noise.start(now);
+            } else if (type === 'chord') {
+                // Lo-fi dreamy chord frequencies (C major 7th vibe)
+                const freqs = [261.63, 329.63, 392.00, 493.88];
+                freqs.forEach(f => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(f, now);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 1.2);
+                });
+            }
+        }
+
+        // Auto Jam Lo-Fi Sequencer
+        let isAutoJamming = false;
+        let autoJamInterval = null;
+        let currentBpm = 85;
+
+        function updateTempo(val) {
+            currentBpm = val;
+            document.getElementById('tempoVal').innerText = val;
+            if (isAutoJamming) {
+                clearInterval(autoJamInterval);
+                startAutoJamLoop();
+            }
+        }
+
+        function toggleAutoJam() {
+            isAutoJamming = !isAutoJamming;
+            const btnIcon = document.getElementById('autoJamIcon');
+            const btnText = document.getElementById('autoJamText');
+            if (isAutoJamming) {
+                btnIcon.innerText = '⏸';
+                btnText.innerText = 'Stop Auto-Jam';
+                startAutoJamLoop();
+            } else {
+                btnIcon.innerText = '▶';
+                btnText.innerText = 'Start Auto-Jam';
+                clearInterval(autoJamInterval);
+            }
+        }
+
+        function startAutoJamLoop() {
+            const intervalMs = (60 / currentBpm) * 500; // 8th note interval
+            let step = 0;
+            autoJamInterval = setInterval(() => {
+                playSound('hihat');
+                if (step % 2 === 0) playSound('kick');
+                if (step % 4 === 2) playSound('snare');
+                if (step % 8 === 0) playSound('chord');
+                step = (step + 1) % 16;
+            }, intervalMs);
+        }
+
+        // Keyboard shortcuts for Beat Pad
+        window.addEventListener('keydown', (e) => {
+            const k = e.key.toLowerCase();
+            if (k === 'q') playSound('kick');
+            if (k === 'w') playSound('snare');
+            if (k === 'e') playSound('hihat');
+            if (k === 'r') playSound('chord');
+        });
+
+        let particleCanvas, pCtx, particles = [];
+        function initParticleCanvas() {
+            particleCanvas = document.getElementById('particleCanvas');
+            pCtx = particleCanvas.getContext('2d');
+            resizeParticleCanvas();
+            window.addEventListener('resize', resizeParticleCanvas);
+
+            particles = [];
+            for (let i = 0; i < 70; i++) {
+                particles.push({
+                    x: Math.random() * particleCanvas.width,
+                    y: Math.random() * particleCanvas.height,
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: (Math.random() - 0.5) * 1.5,
+                    radius: Math.random() * 3 + 1,
+                    color: ['#a855f7', '#ec4899', '#3b82f6', '#06b6d4'][Math.floor(Math.random() * 4)]
+                });
+            }
+
+            particleCanvas.onmousemove = (e) => {
+                const rect = particleCanvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                for (let i = 0; i < 2; i++) {
+                    particles.push({
+                        x: mouseX,
+                        y: mouseY,
+                        vx: (Math.random() - 0.5) * 3,
+                        vy: (Math.random() - 0.5) * 3,
+                        radius: Math.random() * 4 + 1,
+                        color: '#ec4899'
+                    });
+                }
+                if (particles.length > 150) particles.shift();
+            };
+
+            animateParticles();
+        }
+
+        function resizeParticleCanvas() {
+            if (!particleCanvas) return;
+            particleCanvas.width = particleCanvas.parentElement.clientWidth;
+            particleCanvas.height = particleCanvas.parentElement.clientHeight;
+        }
+
+        function clearParticles() {
+            particles = [];
+        }
+
+        function animateParticles() {
+            if (!pCtx || document.getElementById('tab-sandbox').classList.contains('hidden')) return;
+            pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > particleCanvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > particleCanvas.height) p.vy *= -1;
+
+                pCtx.beginPath();
+                pCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                pCtx.fillStyle = p.color;
+                pCtx.shadowBlur = 10;
+                pCtx.shadowColor = p.color;
+                pCtx.fill();
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        let gameCanvas, gCtx, gameRunning = false, score = 0, player = {}, obstacles = [], stars = [];
+        let animationFrameId = null;
+
+        function setupGameCanvas() {
+            gameCanvas = document.getElementById('gameCanvas');
+            gCtx = gameCanvas.getContext('2d');
+            resizeGameCanvas();
+            window.addEventListener('resize', resizeGameCanvas);
+        }
+
+        function resizeGameCanvas() {
+            if (!gameCanvas) return;
+            gameCanvas.width = gameCanvas.parentElement.clientWidth;
+            gameCanvas.height = gameCanvas.parentElement.clientHeight;
+        }
+
+        function startGame() {
+            setupGameCanvas();
+            gameRunning = true;
+            score = 0;
+            document.getElementById('scoreVal').innerText = score;
+            document.getElementById('gameOverlay').classList.add('hidden');
+
+            player = { x: gameCanvas.width / 2, y: gameCanvas.height - 50, radius: 15, speed: 6, dx: 0 };
+            obstacles = [];
+            stars = [];
+
+            // Mouse / Touch movement handlers for game
+            gameCanvas.onmousemove = (e) => {
+                const rect = gameCanvas.getBoundingClientRect();
+                player.x = e.clientX - rect.left;
+            };
+
+            gameCanvas.ontouchmove = (e) => {
+                const rect = gameCanvas.getBoundingClientRect();
+                if (e.touches.length > 0) {
+                    player.x = e.touches[0].clientX - rect.left;
+                }
+            };
+
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            gameLoop();
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            gCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+            // Spawn obstacles & stars
+            if (Math.random() < 0.03) {
+                obstacles.push({
+                    x: Math.random() * (gameCanvas.width - 30) + 15,
+                    y: -20,
+                    radius: Math.random() * 15 + 10,
+                    speed: Math.random() * 3 + 2
+                });
+            }
+
+            if (Math.random() < 0.02) {
+                stars.push({
+                    x: Math.random() * (gameCanvas.width - 20) + 10,
+                    y: -20,
+                    radius: 8,
+                    speed: 2
+                });
+            }
+
+            // Update & draw player
+            player.x = Math.max(player.radius, Math.min(gameCanvas.width - player.radius, player.x));
+            gCtx.beginPath();
+            gCtx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+            gCtx.fillStyle = '#a855f7';
+            gCtx.shadowBlur = 15;
+            gCtx.shadowColor = '#a855f7';
+            gCtx.fill();
+
+            // Update & draw obstacles
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                let obs = obstacles[i];
+                obs.y += obs.speed;
+                gCtx.beginPath();
+                gCtx.arc(obs.x, obs.y, obs.radius, 0, Math.PI * 2);
+                gCtx.fillStyle = '#ef4444';
+                gCtx.shadowBlur = 10;
+                gCtx.shadowColor = '#ef4444';
+                gCtx.fill();
+
+                // Collision check
+                let dist = Math.hypot(player.x - obs.x, player.y - obs.y);
+                if (dist < player.radius + obs.radius) {
+                    gameOver();
+                    return;
+                }
+
+                if (obs.y > gameCanvas.height + 30) obstacles.splice(i, 1);
+            }
+
+            // Update & draw stars
+            for (let i = stars.length - 1; i >= 0; i--) {
+                let s = stars[i];
+                s.y += s.speed;
+                gCtx.beginPath();
+                gCtx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                gCtx.fillStyle = '#eab308';
+                gCtx.shadowBlur = 12;
+                gCtx.shadowColor = '#eab308';
+                gCtx.fill();
+
+                let dist = Math.hypot(player.x - s.x, player.y - s.y);
+                if (dist < player.radius + s.radius) {
+                    score += 10;
+                    document.getElementById('scoreVal').innerText = score;
+                    stars.splice(i, 1);
+                } else if (s.y > gameCanvas.height + 30) {
+                    stars.splice(i, 1);
+                }
+            }
+
+            score += 0.05;
+            document.getElementById('scoreVal').innerText = Math.floor(score);
+
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            document.getElementById('gameTitle').innerText = 'Mission Failed!';
+            document.getElementById('gameSub').innerText = `Final Score: ${Math.floor(score)}`;
+            document.getElementById('gameOverlay').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
